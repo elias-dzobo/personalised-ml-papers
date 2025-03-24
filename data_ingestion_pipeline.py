@@ -239,7 +239,4 @@ def pipeline():
     
 
 if __name__ == '__main__':
-    pipeline.serve(
-        name='ml-papers-pipeline',
-        cron='0 0 * * *'
-    )
+    pipeline()
