@@ -1,6 +1,6 @@
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from llm_integration import RAG
-from database import * 
+from database.database import * 
 from schema import Summary
 
 # conn, cursor = connect_to_database()

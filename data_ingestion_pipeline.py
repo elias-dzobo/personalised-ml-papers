@@ -4,12 +4,12 @@ import re as regex
 from prefect import task, flow
 from pprint import pprint
 import logging
-from database import *
+from database.database import *
 from datetime import datetime
 import uuid
 from llm_integration import RAG
 import time 
-
+from utils.schema import validate_schema
 
 
 URL = 'https://paperswithcode.com'
@@ -126,41 +126,6 @@ def create_summary_and_save(papers):
     
 
 @task(retries=2)
-def create_papers_table():
-    conn, cursor = connect_to_database()
-    sql_cmd = """
-    CREATE TABLE IF NOT EXISTS papers (
-        id SERIAL PRIMARY KEY,
-        topic TEXT NOT NULL,
-        abstract TEXT,
-        url TEXT UNIQUE NOT NULL,
-        github TEXT NOT NULL,
-        authors TEXT[],
-        introduction TEXT,
-        methodology TEXT,
-        limitations TEXT,
-        results TEXT,
-        conclusions TEXT,
-        image TEXT,
-        date DATE,
-        tags TEXT[],
-        pdf TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-    """
-    try:
-        cursor.execute(sql_cmd)
-        conn.commit()
-        logging.info("Table created successfully")
-    except Exception as e:
-        logging.error("Failed to create table: %s", str(e))
-    finally:
-        cursor.close()
-        conn.close()
-    
-    
-
-@task(retries=2)
 def save_to_db(data):
     conn, cursor = connect_to_database()
     if not conn or not cursor:
@@ -178,6 +143,9 @@ def save_to_db(data):
                         parsed_date = datetime.strptime(date_str, format).date()
                     except ValueError:
                         logging.warning(f"Invalid date format for {paper['url']}: {date_str}")
+
+                if not validate_schema(paper):
+                    continue
 
                 cursor.execute("""
                     INSERT INTO papers

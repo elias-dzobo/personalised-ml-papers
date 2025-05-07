@@ -1,5 +1,5 @@
 from prefect import task, flow 
-from database import Database
+from database.database import Database
 from llm_integration import RAG
 import time
 

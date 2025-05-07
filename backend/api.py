@@ -1,6 +1,6 @@
 import fastapi
 from fastapi import FastAPI
-from .. import database
+from ..database import database
 
 app = FastAPI()
 

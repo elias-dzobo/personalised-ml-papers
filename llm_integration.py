@@ -4,7 +4,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import PGVector
 from langchain_groq import ChatGroq
 from langchain.chains import RetrievalQA
-from database import * 
+from database.database import * 
 import instructor
 from groq import Groq
 from schema import Summary
